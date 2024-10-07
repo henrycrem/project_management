@@ -69,7 +69,7 @@ export default function CategoryForm({
         //route
         router.push("/dashboard/categories");
         setImageUrl("/placeholder.svg");
-      } else {
+       } else {
         await createCategory(data);
         setLoading(false);
         // Toast

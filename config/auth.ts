@@ -79,7 +79,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           console.log("Pass 2 Checked");
-          console.log(existingUser);
+          // console.log(existingUser);
           let passwordMatch: boolean = false;
           //Check if Password is correct
           if (existingUser && existingUser.password) {
@@ -106,7 +106,7 @@ export const authOptions: NextAuthOptions = {
           };
           //
           console.log("User Compiled");
-          console.log(user);
+          // console.log(user);
           return user;
         } catch (error) {
           console.log("aLL Failed");
@@ -118,7 +118,7 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      console.log("JWT callback", { token, user });
+      // console.log("JWT callback", { token, user });
       if (user) {
         token.id = user.id;
         token.name = user.name;
@@ -132,7 +132,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     session({ session, token }) {
-      console.log("Session callback", { session, token });
+      // console.log("Session callback", { session, token });
       if (session.user && token) {
         session.user.id = token.id;
         session.user.name = token.name;

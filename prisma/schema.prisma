@@ -45,6 +45,8 @@ enum UserRole {
   USER
   ADMIN
   SERVICE_PROVIDER
+  CLIENT 
+  MEMBER
 }
  
 model User {
@@ -56,15 +58,23 @@ model User {
   email         String   @unique
   emailVerified DateTime?
   image         String?
+  country        String?
+  address         String?
   role          UserRole  @default(USER)
   password      String?
   status Boolean @default(true)
   accounts      Account[]
   sessions      Session[]
+  project      Project[]
+  invoice      Invoice[]
   isVerfied     Boolean   @default(false)
   token         Int?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  Payment Payment[]
+
+  PortfolioItem PortfolioItem[]
 }
  
  
@@ -80,4 +90,130 @@ model Category {
   updatedAt DateTime? @updatedAt
 }
 
- 
+ model Project {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  description String?
+  startDated DateTime
+  endDate DateTime
+  status String
+  clientId String  @db.ObjectId
+  // client Client @relation(fields: [clientId], references: [id])
+  userId String @db.ObjectId
+  user User @relation(fields: [userId], references: [id])
+  modules Module[]
+  members Member[]
+  invoice Invoice[]
+  // quotations Quotation[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+
+ }
+
+ model Module {
+  id   String    @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  projectId String @db.ObjectId
+  project Project @relation(fields: [projectId], references: [id])
+  tasks Task[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+ }
+
+  model Task {
+  id   String    @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  description String?
+  status String
+  dueDate DateTime
+  moduleId String @db.ObjectId
+  module Module @relation(fields: [moduleId], references: [id])
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+
+ }
+
+
+   model Invoice {
+  id   String    @id @default(auto()) @map("_id") @db.ObjectId
+  invoiceNumber String @unique
+  amount Float
+  status String
+  dueDate DateTime
+  projectId String @db.ObjectId
+  project Project @relation(fields: [projectId], references: [id])
+  userId String @db.ObjectId
+  user User @relation(fields: [userId], references: [id])
+
+
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+
+ }
+
+
+//    model Quotation {
+//   id   String    @id @default(auto()) @map("_id") @db.ObjectId
+//   quotationNumber String @unique
+//   amount  Float
+//   validUnit DateTime
+//   projectId String @db.ObjectId
+//   project Project @relation(fields: [projectId], references: [id])
+//   userId String @db.ObjectId
+//   user User @relation(fields: [userId], references: [id])
+
+
+
+
+  
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime? @updatedAt
+
+
+//  }
+
+  model Payment {
+  id   String    @id @default(auto()) @map("_id") @db.ObjectId
+  date DateTime
+  method String
+  userId String @db.ObjectId
+  user User @relation(fields: [userId], references: [id])
+
+
+  
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+
+ }
+
+ model PortfolioItem {
+  id   String    @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  description String?
+  imageUrl String?
+  projecturl String?
+  userId String @db.ObjectId
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model Member {
+  id   String    @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  email String
+  projectId String @db.ObjectId
+  project Project @relation(fields: [projectId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}

@@ -1,11 +1,31 @@
 "use server";
 
 import { db } from "@/prisma/db";
+import { CategoryProps } from "@/types/types";
+import { revalidatePath } from "next/cache";
 import { UserProps } from "@/types/types";
 import bcrypt from "bcrypt";
-import { revalidatePath } from "next/cache";
-export async function createUser(data: UserProps) {
-  const { email, password, firstName, lastName, name, phone, image, role, country, address } = data;
+
+export async function getAllClients() {
+  try {
+    const clients = await db.user.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      where:{
+        role : "CLIENT"
+      }
+    });
+
+    return clients;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
+export async function createClient(data: UserProps) {
+  const { email, password, firstName, lastName, name, phone, image } = data;
   try {
     // Hash the PAASWORD
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -30,9 +50,6 @@ export async function createUser(data: UserProps) {
         name,
         phone,
         image,
-        role,
-        country,
-        address
       },
     });
     // revalidatePath("/dashboard/users");
@@ -53,19 +70,33 @@ export async function createUser(data: UserProps) {
 }
 
 
-export async function deleteUser(id: string) {
+export async function updateClientById(id: string, data: UserProps) {
   try {
-    const deletedUser = await db.user.delete({
+    const updatedClient = await db.user.update({
       where: {
         id,
       },
+      data,
     });
-
-    return {
-      ok: true,
-      data: deletedUser,
-    };
+    revalidatePath("/dashboard/clients");
+    return updatedClient;
   } catch (error) {
     console.log(error);
   }
 }
+
+
+export async function getClientById(id: string) {
+  try {
+    const client = await db.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    return client;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
