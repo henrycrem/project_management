@@ -17,6 +17,7 @@ export type UserProps = {
   role?: UserRole
   country?: string;
   address: string
+  userId?: string
 };
 export type LoginProps = {
   email: string;

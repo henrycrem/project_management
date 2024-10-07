@@ -28,14 +28,16 @@ export type SelectOptionProps = {
   label: string;
   value: string;
 };
-type CategoryFormProps = {
+type ClientFormProps = {
   editingId?: string | undefined;
+  userId?: string 
   initialData?: PrismaUser | undefined | null;
 };
 export default function ClientForm({
   editingId,
   initialData,
-}: CategoryFormProps) {
+  userId
+}: ClientFormProps) {
   const {
     register,
     handleSubmit,
@@ -50,6 +52,7 @@ export default function ClientForm({
       image: initialData?.image || "",
       country: initialData?.country || "",
       address: initialData?.address || "",
+      userId: userId,  
       
      
     },
@@ -66,6 +69,8 @@ export default function ClientForm({
     data.name = `${data.firstName} ${data.lastName}`;
     data.image = imageUrl;
     data.role = "CLIENT"
+    data.userId = userId;
+    
 
     
 

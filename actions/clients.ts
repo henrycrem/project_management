@@ -6,21 +6,25 @@ import { revalidatePath } from "next/cache";
 import { UserProps } from "@/types/types";
 import bcrypt from "bcrypt";
 
-export async function getAllClients() {
-  try {
-    const clients = await db.user.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-      where:{
-        role : "CLIENT"
-      }
-    });
-
-    return clients;
-  } catch (error) {
-    console.log(error);
-    return null;
+export async function getAllClients(userId: string | undefined) {
+  if(userId){
+    
+    try {
+      const clients = await db.user.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        where:{
+          role : "CLIENT",
+          userId
+        }
+      });
+  
+      return clients;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
   }
 }
 

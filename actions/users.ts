@@ -5,7 +5,7 @@ import { UserProps } from "@/types/types";
 import bcrypt from "bcrypt";
 import { revalidatePath } from "next/cache";
 export async function createUser(data: UserProps) {
-  const { email, password, firstName, lastName, name, phone, image, role, country, address } = data;
+  const { email, password, firstName, lastName, name, phone, image, role, country, address, userId } = data;
   try {
     // Hash the PAASWORD
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -32,7 +32,8 @@ export async function createUser(data: UserProps) {
         image,
         role,
         country,
-        address
+        address,
+        userId
       },
     });
     // revalidatePath("/dashboard/users");
